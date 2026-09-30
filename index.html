@@ -1394,6 +1394,20 @@ const SUBJECTS = [
   { id:'pedagogy', name:'교육학', desc:'교육과정·교육방법·교육평가·교육행정 · 인출 연습', ready:true, href:'edu.html' }
 ];
 
+/* 다른 과목 페이지를 유휴 시간에 미리 받아 둠 (데이터 절약 모드에서는 생략) */
+function prefetchSubjects(){
+  const c = navigator.connection;
+  if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
+  ['poetry.html','poetry-data.js','kgr.html','edu.html'].forEach(href => {
+    const l = document.createElement('link');
+    l.rel = 'prefetch'; l.href = href;
+    document.head.appendChild(l);
+  });
+}
+window.addEventListener('load', () => {
+  (window.requestIdleCallback || (f => setTimeout(f, 1500)))(prefetchSubjects);
+});
+
 function renderSubject(){
   crumbEl.textContent = '임용 국어 공부';
   let html = '<div class="hero"><h1>임용 국어 공부</h1><p>준비하는 과목을 고르세요.</p></div>';
